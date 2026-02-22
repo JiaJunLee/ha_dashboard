@@ -2,6 +2,8 @@ import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'  // 你的 Vue 根组件
 
+console.log('initialize ha dashboard...')
+
 // HA 面板初始化方法（新版 HA 会调用这个方法）
 window.customPanel = {
     async init(hass, element) {
