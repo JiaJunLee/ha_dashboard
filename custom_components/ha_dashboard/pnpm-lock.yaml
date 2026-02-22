@@ -18,9 +18,6 @@ importers:
       '@vitejs/plugin-vue-jsx':
         specifier: ^5.1.4
         version: 5.1.4(vite@7.3.1)(vue@3.5.28)
-      '@vue/web-component-wrapper':
-        specifier: ^1.3.0
-        version: 1.3.0
       vite:
         specifier: ^7.3.1
         version: 7.3.1
@@ -518,9 +515,6 @@ packages:
 
   '@vue/shared@3.5.28':
     resolution: {integrity: sha512-cfWa1fCGBxrvaHRhvV3Is0MgmrbSCxYTXCSCau2I0a1Xw1N1pHAvkWCiXPRAqjvToILvguNyEwjevUqAuBQWvQ==}
-
-  '@vue/web-component-wrapper@1.3.0':
-    resolution: {integrity: sha512-Iu8Tbg3f+emIIMmI2ycSI8QcEuAUgPTgHwesDU1eKMLE4YC/c/sFbGc70QgMq31ijRftV0R7vCm9co6rldCeOA==}
 
   baseline-browser-mapping@2.10.0:
     resolution: {integrity: sha512-lIyg0szRfYbiy67j9KN8IyeD7q7hcmqnJ1ddWmNt19ItGpNN64mnllmxUNFIOdOm6by97jlL6wfpTTJrmnjWAA==}
@@ -1147,8 +1141,6 @@ snapshots:
       vue: 3.5.28
 
   '@vue/shared@3.5.28': {}
-
-  '@vue/web-component-wrapper@1.3.0': {}
 
   baseline-browser-mapping@2.10.0: {}
 

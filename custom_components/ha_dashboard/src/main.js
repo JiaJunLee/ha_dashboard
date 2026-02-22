@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import './style.css'
 
-customElements.define('ha_dashboard', class extends HTMLElement {
+customElements.define('ha-dashboard', class extends HTMLElement {
     set hass(hass) {
         if (!this._panel) {
             this._panel = createApp(App).mount(this);

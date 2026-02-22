@@ -1,6 +1,6 @@
 {
-  "domain": "ha_dashboard",
-  "name": "ha_dashboard",
+  "domain": "ha-dashboard",
+  "name": "ha-dashboard",
   "version": "1.0.0",
   "documentation": "https://github.com/JiaJunLee/ha_dashboard",
   "requirements": [],
@@ -10,7 +10,7 @@
   "resources": [
     {
       "type": "js",
-      "url": "/custom_components/ha_dashboard/www/ha-dashboard-panel.js"
+      "url": "/custom_components/ha_dashboard/www/js/index.js"
     }
   ]
 }
