@@ -2,7 +2,7 @@
   "name": "HA Dashboard",
   "render_readme": false,
   "type": "dashboard",
-  "filename": "custom_components/ha_dashboard/www/js/main.js",
+  "filename": "custom_components/ha_dashboard/www/js/index.js",
   "domains": ["ha_dashboard"],
   "homeassistant": "2023.1.0"
 }
