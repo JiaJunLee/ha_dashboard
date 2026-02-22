@@ -1,23 +1,32 @@
 import { createApp } from 'vue'
 import './style.css'
-import App from './App.vue'
+import App from './App.vue'  // 你的 Vue 根组件
 
-// 方式 1：开发环境直接挂载
-if (process.env.NODE_ENV === 'development') {
-    createApp(App).mount('#app')
-}
-
-// 方式 2：HA 环境中暴露组件（供 HA 加载）
+// HA 面板初始化方法（新版 HA 会调用这个方法）
 window.customPanel = {
-    // HA 要求的初始化方法
     async init(hass, element) {
-        // 在 HA 提供的元素中挂载 Vue 应用
-        createApp(App).mount(element)
-        // 保存 HA 实例到全局，供组件内使用
-        window.hass = hass
+        // 1. 保存 HA 实例到全局，供 Vue 组件使用
+        window.hass = hass;
+
+        // 2. 检查 element 是否存在，不存在则创建（适配 iframe 模式）
+        let mountElement = element;
+        if (!mountElement) {
+            mountElement = document.createElement('div');
+            mountElement.id = 'ha-dashboard';
+            document.body.appendChild(mountElement);
+        }
+
+        // 3. 挂载 Vue 应用到 HA 提供的元素/手动创建的元素
+        createApp(App).mount(mountElement);
     },
-    // HA 要求的销毁方法
     destroy() {
-        // 清理逻辑（可选）
-    },
+        // 可选：销毁 Vue 应用（防止内存泄漏）
+        const appElement = document.getElementById('ha-dashboard');
+        if (appElement) appElement.innerHTML = '';
+    }
+};
+
+// 开发环境兼容（不影响 HA 生产环境）
+if (process.env.NODE_ENV === 'development') {
+    createApp(App).mount('#app');
 }
