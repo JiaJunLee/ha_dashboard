@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import { resolve } from 'node:path'
 
 export default defineConfig({
+  base: process.env.NODE_ENV === 'production' ? '/local/community/ha_dashboard/custom_components/ha_dashboard/www' : '',
   plugins: [vue()],
   // 关键：打包输出适配 HA 的目录和格式
   build: {
