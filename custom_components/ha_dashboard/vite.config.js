@@ -1,33 +1,28 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { resolve } from 'node:path'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 
 export default defineConfig({
-  plugins: [vue()],
-  // 关键：打包输出适配 HA 的目录和格式
+  plugins: [
+    vue({
+      template: {
+        // 告诉 Vue 忽略自定义元素（避免打包警告）
+        compilerOptions: { isCustomElement: (tag) => tag === 'ha-dashboard-panel' }
+      }
+    }),
+    vueJsx()
+  ],
   build: {
-    // 输出目录改为 HA 易识别的 dist
     outDir: 'www',
-    // 打包为静态资源（无 hash，方便 HA 引用）
+    // 关键：打包为单个 ES 模块文件，HA 2025+ 优先加载 ES 模块
     rollupOptions: {
+      input: 'src/main.js',
       output: {
-        entryFileNames: 'js/[name].js',
-        chunkFileNames: 'js/[name].js',
-        assetFileNames: '[ext]/[name].[ext]',
-      },
+        format: 'es', // 输出 ES 模块（新版 HA 要求）
+        entryFileNames: 'ha-dashboard-panel.js', // 单文件输出，便于 HA 加载
+        compact: true // 压缩代码
+      }
     },
-    // 禁用 sourcemap（减少体积，HA 生产环境不需要）
-    sourcemap: false,
-  },
-  // 配置路径别名（可选，方便开发）
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, 'src'),
-    },
-  },
-  // 开发时允许 HA 跨域访问（调试用）
-  server: {
-    cors: true,
-    host: '0.0.0.0', // 允许局域网访问
-  },
+    sourcemap: false
+  }
 })

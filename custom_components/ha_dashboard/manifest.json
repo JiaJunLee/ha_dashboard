@@ -10,7 +10,7 @@
   "resources": [
     {
       "type": "js",
-      "url": "/custom_components/ha_dashboard/www/js/index.js"
+      "url": "/custom_components/ha_dashboard/www/ha-dashboard-panel.js"
     }
   ]
 }
