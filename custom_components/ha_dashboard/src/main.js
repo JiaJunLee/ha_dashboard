@@ -9,6 +9,27 @@ class HaDashboard extends HTMLElement {
         this._hass = null;
     }
     
+    connectedCallback() {
+        console.log('Custom element connected');
+        // 动态加载CSS文件
+        this.loadCSS();
+    }
+    
+    loadCSS() {
+        console.log('Loading CSS...');
+        const cssPath = '/local/community/ha_dashboard/custom_components/ha_dashboard/www/css/index.css';
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = cssPath;
+        link.onload = () => {
+            console.log('CSS loaded successfully');
+        };
+        link.onerror = () => {
+            console.error('Failed to load CSS:', cssPath);
+        };
+        document.head.appendChild(link);
+    }
+    
     set hass(hass) {
         console.log('Received hass object:', !!hass);
         this._hass = hass;
