@@ -1,6 +1,5 @@
 import { createApp, provide } from 'vue'
 import App from './App.vue'
-import './style.css'
 
 // 定义自定义元素
 class HaDashboard extends HTMLElement {

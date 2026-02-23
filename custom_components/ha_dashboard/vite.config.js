@@ -15,10 +15,29 @@ export default defineConfig({
         entryFileNames: 'js/[name].js',
         chunkFileNames: 'js/[name].js',
         assetFileNames: '[ext]/[name].[ext]',
+        // 确保 CSS 被内联到 JS 中
+        manualChunks: undefined,
       },
+      // 确保 CSS 被内联到 JS 中
+      plugins: [
+        {
+          name: 'inline-css',
+          generateBundle(outputOptions, bundle) {
+            // 遍历所有资源
+            for (const key in bundle) {
+              if (bundle[key].type === 'asset' && bundle[key].fileName.endsWith('.css')) {
+                // 删除 CSS 资源，因为我们会内联它
+                delete bundle[key];
+              }
+            }
+          }
+        }
+      ]
     },
     // 禁用 sourcemap（减少体积，HA 生产环境不需要）
     sourcemap: false,
+    // 确保 CSS 被内联到 JS 中
+    cssCodeSplit: false,
   },
   // 配置路径别名（可选，方便开发）
   resolve: {

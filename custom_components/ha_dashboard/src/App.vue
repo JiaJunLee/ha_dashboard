@@ -1,72 +1,67 @@
-<script>
-export default {
-  // 使用inject接收hass对象
-  inject: ['hass'],
-  data() {
-    return {
-      devices: [],
-      isLoading: true,
-      error: null
-    };
-  },
-  created() {
-    console.log('App created, injected hass:', this.hass);
-  },
-  mounted() {
-    console.log('App mounted, injected hass:', this.hass);
-    if (this.hass) {
-      console.log('Processing devices in mounted');
-      this.processDevices(this.hass);
-    }
-  },
-  watch: {
-    // 监听hass变化
-    hass: {
-      handler(newHass) {
-        console.log('Hass changed:', !!newHass);
-        if (newHass) {
-          console.log('Processing devices via watch');
-          this.processDevices(newHass);
-        }
-      },
-      deep: true,
-      immediate: true
-    }
-  },
-  methods: {
-    // 处理设备状态数据
-    processDevices(hass) {
-      console.log('Processing devices with hass:', !!hass, !!hass?.states);
-      if (!hass || !hass.states) {
-        this.error = '无法获取设备状态';
-        this.isLoading = false;
-        console.log('Error: No hass or states');
-        return;
-      }
+<script setup>
+import { ref, inject, onMounted, watch } from 'vue';
 
-      const deviceList = [];
-      
-      // 遍历所有状态实体
-      for (const [entityId, stateObj] of Object.entries(hass.states)) {
-        // 跳过非设备实体（可选，根据需要调整）
-        if (!entityId.includes('.')) continue;
+// 使用inject接收hass对象
+const hass = inject('hass');
 
-        deviceList.push({
-          id: entityId,
-          name: stateObj.attributes.friendly_name || entityId,
-          state: stateObj.state,
-          attributes: stateObj.attributes,
-          lastUpdated: stateObj.last_updated
-        });
-      }
+// 响应式数据
+const devices = ref([]);
+const isLoading = ref(true);
+const error = ref(null);
 
-      console.log('Found devices:', deviceList.length);
-      this.devices = deviceList;
-      this.isLoading = false;
-      this.error = null;
-    }
+// 处理设备状态数据
+const processDevices = (hassObj) => {
+  console.log('Processing devices with hass:', !!hassObj, !!hassObj?.states);
+  if (!hassObj || !hassObj.states) {
+    error.value = '无法获取设备状态';
+    isLoading.value = false;
+    console.log('Error: No hass or states');
+    return;
   }
+
+  const deviceList = [];
+  
+  // 遍历所有状态实体
+  for (const [entityId, stateObj] of Object.entries(hassObj.states)) {
+    // 跳过非设备实体（可选，根据需要调整）
+    if (!entityId.includes('.')) continue;
+
+    deviceList.push({
+      id: entityId,
+      name: stateObj.attributes.friendly_name || entityId,
+      state: stateObj.state,
+      attributes: stateObj.attributes,
+      lastUpdated: stateObj.last_updated
+    });
+  }
+
+  console.log('Found devices:', deviceList.length);
+  devices.value = deviceList;
+  isLoading.value = false;
+  error.value = null;
 };
+
+// 监听hass变化
+watch(
+  () => hass,
+  (newHass) => {
+    console.log('Hass changed:', !!newHass);
+    if (newHass) {
+      console.log('Processing devices via watch');
+      processDevices(newHass);
+    }
+  },
+  { deep: true, immediate: true }
+);
+
+// 组件挂载时检查hass是否已存在
+onMounted(() => {
+  console.log('App mounted, injected hass:', hass);
+  if (hass) {
+    console.log('Processing devices in mounted');
+    processDevices(hass);
+  }
+});
 </script>
 
 <template>
@@ -75,7 +70,7 @@ export default {
     
     <!-- 加载状态 -->
     <div v-if="isLoading" class="loading">
-      加载设备状态中 testing..
+      加载设备状态中...
     </div>
     
     <!-- 错误状态 -->
@@ -104,7 +99,8 @@ export default {
   </div>
 </template>
 
-<style scoped>
+<style>
+/* 全局样式，会被内联到JS中 */
 .dashboard-container {
   max-width: 1200px;
   margin: 0 auto;
