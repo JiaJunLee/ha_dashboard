@@ -1,5 +1,6 @@
 <script setup>
 import { ref, inject, onMounted, watch } from 'vue';
+import FlipClock from './components/FlipClock.vue';
 
 // 使用inject接收hass对象
 const hass = inject('hass');
@@ -65,47 +66,26 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="dashboard-container">
-    <h1>智能家居设备状态</h1>
-    
-    <!-- 加载状态 -->
-    <div v-if="isLoading" class="loading">
-      加载设备状态中...
-    </div>
-    
-    <!-- 错误状态 -->
-    <div v-else-if="error" class="error">
-      {{ error }}
-    </div>
-    
-    <!-- 设备列表 -->
-    <div v-else-if="devices.length > 0" class="devices-grid">
-      <div v-for="device in devices" :key="device.id" class="device-card">
-        <div class="device-name">{{ device.name }}</div>
-        <div class="device-state" :class="`state-${device.state}`">
-          {{ device.state }}
+    <el-container class="dashboard-container">
+      <el-header style="position: relative; display: flex; align-items: center;" height="120px">
+        <div style="width: 335px; position: relative;">
+          <FlipClock/>
         </div>
-        <div class="device-info">
-          <small>{{ device.id }}</small>
-          <small>{{ new Date(device.lastUpdated).toLocaleString() }}</small>
-        </div>
-      </div>
-    </div>
-    
-    <!-- 无设备状态 -->
-    <div v-else class="no-devices">
-      未检测到设备
-    </div>
-  </div>
+      </el-header>
+      <el-container>
+        <el-aside width="300px">Aside</el-aside>
+        <el-main>Main</el-main>
+      </el-container>
+    </el-container>
 </template>
 
 <style>
 /* 全局样式，会被内联到JS中 */
 .dashboard-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
+  height: 100vh;
+  background-image: url('@/assets/visaxslr-texture-7515225_1920.jpg');
+  background-size: cover;
+  background-position: center;
 }
 
 h1 {
