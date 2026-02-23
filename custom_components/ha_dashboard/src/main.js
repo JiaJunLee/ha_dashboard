@@ -11,23 +11,34 @@ class HaDashboard extends HTMLElement {
     
     connectedCallback() {
         console.log('Custom element connected');
-        // 动态加载CSS文件
-        this.loadCSS();
+        // 动态加载CSS文件内容并添加到自定义元素内部
+        this.loadAndInjectCSS();
     }
     
-    loadCSS() {
-        console.log('Loading CSS...');
+    async loadAndInjectCSS() {
+        console.log('Loading CSS file...');
         const cssPath = '/local/community/ha_dashboard/custom_components/ha_dashboard/www/css/index.css';
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = cssPath;
-        link.onload = () => {
-            console.log('CSS loaded successfully');
-        };
-        link.onerror = () => {
-            console.error('Failed to load CSS:', cssPath);
-        };
-        document.head.appendChild(link);
+        
+        try {
+            const response = await fetch(cssPath);
+            if (!response.ok) {
+                throw new Error(`Failed to load CSS: ${response.status}`);
+            }
+            
+            const cssContent = await response.text();
+            console.log('CSS file loaded successfully');
+            
+            // 创建style元素并添加CSS内容
+            const style = document.createElement('style');
+            style.textContent = cssContent;
+            
+            // 将style元素添加到自定义元素内部
+            this.appendChild(style);
+            console.log('CSS injected successfully into custom element');
+        } catch (error) {
+            console.error('Error loading CSS:', error);
+            // 加载失败时不使用默认样式
+        }
     }
     
     set hass(hass) {
