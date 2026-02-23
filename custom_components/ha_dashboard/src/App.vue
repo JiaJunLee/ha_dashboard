@@ -1,5 +1,7 @@
 <script>
 export default {
+  // 使用inject接收hass对象
+  inject: ['hass'],
   data() {
     return {
       devices: [],
@@ -7,11 +9,23 @@ export default {
       error: null
     };
   },
+  created() {
+    console.log('App created, injected hass:', this.hass);
+  },
+  mounted() {
+    console.log('App mounted, injected hass:', this.hass);
+    if (this.hass) {
+      console.log('Processing devices in mounted');
+      this.processDevices(this.hass);
+    }
+  },
   watch: {
-    // 监听$hass变化
-    $hass: {
+    // 监听hass变化
+    hass: {
       handler(newHass) {
+        console.log('Hass changed:', !!newHass);
         if (newHass) {
+          console.log('Processing devices via watch');
           this.processDevices(newHass);
         }
       },
@@ -19,18 +33,14 @@ export default {
       immediate: true
     }
   },
-  mounted() {
-    // 组件挂载时检查$hass是否已存在
-    if (this.$hass) {
-      this.processDevices(this.$hass);
-    }
-  },
   methods: {
     // 处理设备状态数据
     processDevices(hass) {
+      console.log('Processing devices with hass:', !!hass, !!hass?.states);
       if (!hass || !hass.states) {
         this.error = '无法获取设备状态';
         this.isLoading = false;
+        console.log('Error: No hass or states');
         return;
       }
 
@@ -50,6 +60,7 @@ export default {
         });
       }
 
+      console.log('Found devices:', deviceList.length);
       this.devices = deviceList;
       this.isLoading = false;
       this.error = null;
