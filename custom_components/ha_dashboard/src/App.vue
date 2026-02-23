@@ -60,7 +60,7 @@ onMounted(() => {
     
     <!-- 加载状态 -->
     <div v-if="isLoading" class="loading">
-      加载设备状态中...
+      加载设备状态中 testing..
     </div>
     
     <!-- 错误状态 -->
