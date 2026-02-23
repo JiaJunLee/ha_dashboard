@@ -1,57 +1,61 @@
-<script setup>
-import { ref, onMounted, watch, getCurrentInstance } from 'vue';
-
-const instance = getCurrentInstance();
-const devices = ref([]);
-const isLoading = ref(true);
-const error = ref(null);
-
-// 处理设备状态数据
-const processDevices = (hass) => {
-  if (!hass || !hass.states) {
-    error.value = '无法获取设备状态';
-    isLoading.value = false;
-    return;
-  }
-
-  const deviceList = [];
-  
-  // 遍历所有状态实体
-  for (const [entityId, stateObj] of Object.entries(hass.states)) {
-    // 跳过非设备实体（可选，根据需要调整）
-    if (!entityId.includes('.')) continue;
-
-    deviceList.push({
-      id: entityId,
-      name: stateObj.attributes.friendly_name || entityId,
-      state: stateObj.state,
-      attributes: stateObj.attributes,
-      lastUpdated: stateObj.last_updated
-    });
-  }
-
-  devices.value = deviceList;
-  isLoading.value = false;
-  error.value = null;
-};
-
-// 监听$hass变化
-watch(
-  () => instance?.proxy?.$hass,
-  (newHass) => {
-    if (newHass) {
-      processDevices(newHass);
+<script>
+export default {
+  data() {
+    return {
+      devices: [],
+      isLoading: true,
+      error: null
+    };
+  },
+  watch: {
+    // 监听$hass变化
+    $hass: {
+      handler(newHass) {
+        if (newHass) {
+          this.processDevices(newHass);
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
-  { deep: true }
-);
+  mounted() {
+    // 组件挂载时检查$hass是否已存在
+    if (this.$hass) {
+      this.processDevices(this.$hass);
+    }
+  },
+  methods: {
+    // 处理设备状态数据
+    processDevices(hass) {
+      if (!hass || !hass.states) {
+        this.error = '无法获取设备状态';
+        this.isLoading = false;
+        return;
+      }
 
-// 组件挂载时检查$hass是否已存在
-onMounted(() => {
-  if (instance?.proxy?.$hass) {
-    processDevices(instance.proxy.$hass);
+      const deviceList = [];
+      
+      // 遍历所有状态实体
+      for (const [entityId, stateObj] of Object.entries(hass.states)) {
+        // 跳过非设备实体（可选，根据需要调整）
+        if (!entityId.includes('.')) continue;
+
+        deviceList.push({
+          id: entityId,
+          name: stateObj.attributes.friendly_name || entityId,
+          state: stateObj.state,
+          attributes: stateObj.attributes,
+          lastUpdated: stateObj.last_updated
+        });
+      }
+
+      this.devices = deviceList;
+      this.isLoading = false;
+      this.error = null;
+    }
   }
-});
+};
 </script>
 
 <template>
