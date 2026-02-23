@@ -1,10 +1,7 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, getCurrentInstance } from 'vue';
 
-const props = defineProps({
-  $hass: Object
-});
-
+const instance = getCurrentInstance();
 const devices = ref([]);
 const isLoading = ref(true);
 const error = ref(null);
@@ -40,7 +37,7 @@ const processDevices = (hass) => {
 
 // 监听$hass变化
 watch(
-  () => props.$hass,
+  () => instance?.proxy?.$hass,
   (newHass) => {
     if (newHass) {
       processDevices(newHass);
@@ -51,8 +48,8 @@ watch(
 
 // 组件挂载时检查$hass是否已存在
 onMounted(() => {
-  if (props.$hass) {
-    processDevices(props.$hass);
+  if (instance?.proxy?.$hass) {
+    processDevices(instance.proxy.$hass);
   }
 });
 </script>
